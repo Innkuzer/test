@@ -1,2 +1,2 @@
-echo Hello
+echo Helloooo Й
 pause
