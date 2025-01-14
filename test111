@@ -1,2 +1,3 @@
-echo Аа Бб Вв Гг Дд Ее Ёё Жж Зз Ии Кк Лл Мм Нн Оо
-pause
+@echo off
+REM Open Google Chrome
+start "" "C:\Program Files\Google\Chrome\Application\chrome.exe"
