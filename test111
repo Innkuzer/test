@@ -1,3 +1,2 @@
 @echo off
-REM Open Google Chrome
-start "" "C:\Program Files\Google\Chrome\Application\chrome.exe"
+start calc.exe
